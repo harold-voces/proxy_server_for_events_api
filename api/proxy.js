@@ -2,15 +2,12 @@ const axios = require('axios');
 
 // Serverless function handler
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8888'); // Adjust to your frontend origin
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Allowed methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allowed headers
-
-  // Handle preflight (OPTIONS) requests
-  if (req.method === 'OPTIONS') {
-    return res.status(204).end(); // End the request for preflight
-  }
+    if (req.method === 'OPTIONS') {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, X-CSRF-Token, X-Api-Version');
+        return res.status(200).send('');
+      }
 
   // Handle GET requests (proxy logic)
   if (req.method === 'GET') {
