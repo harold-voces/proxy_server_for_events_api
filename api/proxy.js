@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 // Serverless function handler
 const handler = async (req, res) => {
