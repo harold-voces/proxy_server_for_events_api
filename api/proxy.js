@@ -3,12 +3,12 @@ const axios = require('axios');
 // Serverless function handler
 const handler = async (req, res) => {
   // Handle OPTIONS preflight request
-  if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, X-CSRF-Token, X-Api-Version');
-    return res.status(200).end(); // Ensure the preflight request ends with a 200 status
-  }
+//   if (req.method === 'OPTIONS') {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, X-CSRF-Token, X-Api-Version');
+//     return res.status(200).end(); // Ensure the preflight request ends with a 200 status
+//   }
 
   // Handle GET requests (proxy logic)
   if (req.method === 'GET') {
