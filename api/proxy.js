@@ -1,34 +1,49 @@
 import axios from 'axios';
 
-// Serverless function handler
 const handler = async (req, res) => {
-  // Handle OPTIONS preflight request
+  // Handle OPTIONS preflight
   if (req.method === 'OPTIONS') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, X-CSRF-Token, X-Api-Version');
-    return res.status(200).end(); // Ensure the preflight request ends with a 200 status
+    return res.status(200).end();
   }
 
-  // Handle GET requests (proxy logic)
   if (req.method === 'GET') {
     try {
-      const response = await axios.get('https://api.securevan.com/v4/events?codeIds=1027817&$expand=locations%2Ccodes&$top=10', {
+      const page = parseInt(req.query.page, 10) || 0; // Default to page 0 if not provided
+      const pageSize = 10; // Number of events per page
+      const skip = page * pageSize;
+
+      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
+
+      const response = await axios.get(apiURL, {
         headers: {
           'Authorization': `Basic ${Buffer.from(`${process.env.APP_NAME}:${process.env.VUE_APP_API_KEY}`).toString('base64')}`,
         },
-        params: req.query, // Forward query parameters
+        params: req.query,
       });
 
       console.log('API Response:', response.data);
 
-      // Add CORS headers to the response
+      // Add CORS headers
       res.setHeader('Access-Control-Allow-Origin', '*');
-      return res.status(200).json(response.data);
+
+      // Return the data. If `@odata.nextLink` exists, you can pass it along.
+      // If the response does not have `@odata.nextLink`, you can infer the presence of more data
+      // by the number of items returned.
+      const items = response.data.items || [];
+      const hasMore = items.length === pageSize; 
+      // (Alternatively, use `response.data['@odata.nextLink']` if provided by the API.)
+
+      return res.status(200).json({ 
+        items: items,
+        hasMore: hasMore,
+        // If the API returns `@odata.nextLink`, you could include it here:
+        // nextLink: response.data['@odata.nextLink'] || null
+      });
     } catch (error) {
       console.error('Error fetching events:', error.message);
-
-      // Add CORS headers to the error response
       res.setHeader('Access-Control-Allow-Origin', '*');
       return res
         .status(error.response?.status || 500)
@@ -36,7 +51,6 @@ const handler = async (req, res) => {
     }
   }
 
-  // For unsupported methods
   res.setHeader('Access-Control-Allow-Origin', '*');
   return res.status(405).json({ error: 'Method not allowed' });
 };
