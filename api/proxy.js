@@ -13,7 +13,7 @@ const handler = async (req, res) => {
   // Handle GET requests (proxy logic)
   if (req.method === 'GET') {
     try {
-      const response = await axios.get('https://api.securevan.com/v4/events?$expand=locations%2Ccodes&$top=10', {
+      const response = await axios.get('https://api.securevan.com/v4/events?codeIds=1027817&$expand=locations%2Ccodes&$top=10', {
         headers: {
           'Authorization': `Basic ${Buffer.from(`${process.env.APP_NAME}:${process.env.VUE_APP_API_KEY}`).toString('base64')}`,
         },
