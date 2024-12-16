@@ -17,7 +17,7 @@ const handler = async (req, res) => {
 
       // Add $count=true to the query to retrieve the total item count
       // NOTE: Check EveryAction docs if this is supported for the specific endpoint.
-      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}&$count=true`;
+      const apiURL = `https://api.securevan.com/v4/events?$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}&$count=true`;
 
       const response = await axios.get(apiURL, {
         headers: {
