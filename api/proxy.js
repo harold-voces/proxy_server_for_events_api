@@ -11,36 +11,30 @@ const handler = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      const page = parseInt(req.query.page, 10) || 0; // Default to page 0 if not provided
-      const pageSize = 10; // Number of events per page
+      const page = parseInt(req.query.page, 10) || 0;
+      const pageSize = 10;
       const skip = page * pageSize;
 
-      const apiURL = `https://api.securevan.com/v4/events?$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
+      // Add $count=true to the query to retrieve the total item count
+      // NOTE: Check EveryAction docs if this is supported for the specific endpoint.
+      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}&$count=true`;
 
       const response = await axios.get(apiURL, {
         headers: {
-          'Authorization': `Basic ${Buffer.from(`${process.env.APP_NAME}:${process.env.VUE_APP_API_KEY}`).toString('base64')}`,
+          'Authorization': `Basic ${Buffer.from(`${process.env.APP_NAME}:${process.env.VUE_APP_API_KEY}`).toString('base64')}`
         },
         params: req.query,
       });
 
-      console.log('API Response:', response.data);
+      // According to OData conventions, total count might be in @odata.count
+      const items = response.data.items || [];
+      const totalCount = response.data['@odata.count'] || 0; 
 
       // Add CORS headers
       res.setHeader('Access-Control-Allow-Origin', '*');
-
-      // Return the data. If `@odata.nextLink` exists, you can pass it along.
-      // If the response does not have `@odata.nextLink`, you can infer the presence of more data
-      // by the number of items returned.
-      const items = response.data.items || [];
-      const hasMore = items.length === pageSize; 
-      // (Alternatively, use `response.data['@odata.nextLink']` if provided by the API.)
-
       return res.status(200).json({ 
         items: items,
-        hasMore: hasMore,
-        // If the API returns `@odata.nextLink`, you could include it here:
-        // nextLink: response.data['@odata.nextLink'] || null
+        totalCount: totalCount 
       });
     } catch (error) {
       console.error('Error fetching events:', error.message);
