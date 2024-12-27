@@ -34,11 +34,15 @@ const handler = async (req, res) => {
       // If the response does not have `@odata.nextLink`, you can infer the presence of more data
       // by the number of items returned.
       const items = response.data.items || [];
+      const count = response.data.count;
+      const nextLink = response.data.nextPageLink || null;
       const hasMore = items.length === pageSize; 
       // (Alternatively, use `response.data['@odata.nextLink']` if provided by the API.)
 
       return res.status(200).json({ 
         items: items,
+        count: count,
+        nextLink: nextLink,
         hasMore: hasMore,
         // If the API returns `@odata.nextLink`, you could include it here:
         // nextLink: response.data['@odata.nextLink'] || null
