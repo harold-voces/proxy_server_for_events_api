@@ -37,24 +37,20 @@ const handler = async (req, res) => {
       // Add CORS headers
       res.setHeader('Access-Control-Allow-Origin', '*');
 
-      // Return the data. If `@odata.nextLink` exists, you can pass it along.
-      // If the response does not have `@odata.nextLink`, you can infer the presence of more data
-      // by the number of items returned.
       let items = response.data.items || [];
       // Sort by startDate (ascending: earliest first)
       items.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
       const count = response.data.count;
-      const nextLink = response.data.nextPageLink || null;
+      const nextLink = response.data.nextPageLink;
       const hasMore = items.length === pageSize; 
-      // (Alternatively, use `response.data['@odata.nextLink']` if provided by the API.)
 
       return res.status(200).json({ 
         items: items,
         count: count,
         nextLink: nextLink,
         hasMore: hasMore,
-        // If the API returns `@odata.nextLink`, you could include it here:
-        // nextLink: response.data['@odata.nextLink'] || null
+
       });
     } catch (error) {
       console.error('Error fetching events:', error.message);
