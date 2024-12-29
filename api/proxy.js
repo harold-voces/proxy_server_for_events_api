@@ -33,7 +33,9 @@ const handler = async (req, res) => {
       // Return the data. If `@odata.nextLink` exists, you can pass it along.
       // If the response does not have `@odata.nextLink`, you can infer the presence of more data
       // by the number of items returned.
-      const items = response.data.items || [];
+      let items = response.data.items || [];
+      // Sort by startDate (ascending: earliest first)
+      items.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
       const count = response.data.count;
       const nextLink = response.data.nextPageLink || null;
       const hasMore = items.length === pageSize; 
