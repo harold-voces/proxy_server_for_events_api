@@ -15,8 +15,15 @@ const handler = async (req, res) => {
       const pageSize = 10; // Number of events per page
       const skip = page * pageSize;
 
+      const nowUTC = new Date();
+      const utcYear = nowUTC.getUTCFullYear();
+      const utcMonth = String(nowUTC.getUTCMonth() + 1).padStart(2, '0');
+      const utcDay = String(nowUTC.getUTCDate()).padStart(2, '0');
+
+      const utcFormattedDate = `${utcYear}-${utcMonth}-${utcDay}`;
+
       // const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
-      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
+      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&startingAfter=${utcFormattedDate}&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
 
       const response = await axios.get(apiURL, {
         headers: {
