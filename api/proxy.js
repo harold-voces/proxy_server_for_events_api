@@ -21,7 +21,7 @@ const handler = async (req, res) => {
       const utcDay = String(nowUTC.getUTCDate()).padStart(2, '0');
 
       const utcFormattedDate = `${utcYear}-${utcMonth}-${utcDay}`;
-      const apiURL = `https://api.securevan.com/v4/events?startingAfter=2022-01-01&startingBefore=&$expand=${utcFormattedDate}locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
+      const apiURL = `https://api.securevan.com/v4/events?startingAfter=2022-01-01&startingBefore=${utcFormattedDate}&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
       // const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&startingAfter=${utcFormattedDate}&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
 
       const response = await axios.get(apiURL, {
