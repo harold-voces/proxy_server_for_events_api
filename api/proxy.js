@@ -1,3 +1,7 @@
+// The code I am submitting is entirely my own work. 
+// The project contains commits from two GitHub accounts: my personal account and my organization’s developer account. 
+// Both accounts belong to me. 
+
 import axios from 'axios';
 
 const handler = async (req, res) => {
