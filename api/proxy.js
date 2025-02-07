@@ -15,9 +15,9 @@ const handler = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      const page = parseInt(req.query.page, 10) || 0; // Default to page 0 if not provided
+      const page = parseInt(req.query.page, 10) || 1; // Default to page 0 if not provided
       const pageSize = 10; // Number of events per page
-      const skip = page * pageSize;
+      const skip = (page -1 ) * pageSize;
 
       const nowUTC = new Date();
       const utcYear = nowUTC.getUTCFullYear();
@@ -46,14 +46,13 @@ const handler = async (req, res) => {
 
       const count = response.data.count;
       const nextLink = response.data.nextPageLink;
-      const hasMore = items.length === pageSize; 
+      const hasMore = page * pageSize < count;
 
-      return res.status(200).json({ 
-        items: items,
-        count: count,
-        nextLink: nextLink,
-        hasMore: hasMore,
-
+      return res.status(200).json({
+        items,
+        count,
+        nextLink,
+        hasMore,
       });
     } catch (error) {
       console.error('Error fetching events:', error.message);
