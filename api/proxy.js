@@ -20,13 +20,17 @@ const handler = async (req, res) => {
       const skip = (page -1 ) * pageSize;
 
       const nowUTC = new Date();
-      const utcYear = nowUTC.getUTCFullYear();
-      const utcMonth = String(nowUTC.getUTCMonth() + 1).padStart(2, '0');
-      const utcDay = String(nowUTC.getUTCDate()).padStart(2, '0');
+const startOfDayUTC = new Date(Date.UTC(
+  nowUTC.getUTCFullYear(),
+  nowUTC.getUTCMonth(),
+  nowUTC.getUTCDate(),
+  0, 0, 0
+));
 
-      const utcFormattedDate = `${utcYear}-${utcMonth}-${utcDay}`;
+// Convert to an ISO string
+const utcFormattedDateTime = `${startOfDayUTC.setSeconds(-1)}`;
 
-      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&startingOnOrAfter=${utcFormattedDate}&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
+      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&startingOnOrAfter=${utcFormattedDateTime}&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
 
       const response = await axios.get(apiURL, {
         headers: {
