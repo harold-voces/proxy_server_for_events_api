@@ -26,7 +26,7 @@ const handler = async (req, res) => {
 
       const utcFormattedDate = `${utcYear}-${utcMonth}-${utcDay}`;
 
-      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&startingAfter=${utcFormattedDate}&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
+      const apiURL = `https://api.securevan.com/v4/events?codeIds=1027817&startingOnOrAfter=${utcFormattedDate}&$expand=locations%2Ccodes&$top=${pageSize}&$skip=${skip}`;
 
       const response = await axios.get(apiURL, {
         headers: {
