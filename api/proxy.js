@@ -35,11 +35,6 @@ const handler = async (req, res) => {
         params: req.query,
       });
 
-      console.log('API Response:', response.data);
-
-      // Add CORS headers
-      res.setHeader('Access-Control-Allow-Origin', '*');
-
       let items = response.data.items || [];
       // Sort by startDate (ascending: earliest first)
       items.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
